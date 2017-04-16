@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="col-md-2 col-md-offset-4">
+            <form action="{{ path('our_login') }}" method="post">
+                Username: <input type="text" name="_username" /><br/>
+                Password: <input type="password" name="_password" /><br/>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+
+        </div>
+    </div>
+{% endblock %}
+
