@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 
 
+use AppBundle\Entity\Role;
 use AppBundle\Entity\User;
 use AppBundle\Form\UserType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -11,6 +12,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+
+
 
 
 class UserController extends Controller
@@ -45,6 +48,9 @@ class UserController extends Controller
                 $user,
                 $user->getPassword()
             );
+            $userRole = $this->getDoctrine()->getRepository(Role::class)
+                ->findOneBy(['name'=>'ROLE_USER']);
+            $user->addRole($userRole);
             $user->setPassword($hashedPassword);
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
