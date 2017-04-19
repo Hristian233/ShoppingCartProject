@@ -24,6 +24,9 @@ security:
             form_login:
               login_path: our_login
               check_path: our_login
+            logout:
+                path: user_logout
+
 
     # No authentication required for accessing the login form
     access_control:

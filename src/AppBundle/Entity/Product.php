@@ -28,13 +28,18 @@ class Product
      *
      * @ORM\Column(name="name", type="string", length=255, unique=true)
      *
-     * @Assert\NotBlank(message="Should not be blank")
+     * @Assert\NotBlank()
      */
     private $name;
 
     /**
      * @var string
      * @Assert\NotBlank()
+     * @Assert\Range(
+     *     min=1,
+     *     max="200",
+     *     maxMessage="Value should be less than {{limit}}"
+     * )
      *
      * @ORM\Column(name="price", type="decimal", precision=11, scale=2)
      */
@@ -48,6 +53,23 @@ class Product
      */
     private $description;
 
+    /**
+     * @ORM\Column(name="availability",type="boolean")
+     */
+    private $isAvailable = 1;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Category")
+     *
+     * @Assert\NotBlank()
+     */
+    private $category;
+
+    /**
+     * @ORM\Column(name="image_path", type="string",length=255,unique=false)
+     * @Assert\NotBlank()
+     */
+    private $imagePath;
 
     /**
      * Get id
@@ -72,6 +94,13 @@ class Product
 
         return $this;
     }
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="products")
+     */
+    private $owner;
 
     /**
      * Get name
@@ -129,6 +158,48 @@ class Product
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param mixed $category
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    public function setOwner($owner)
+    {
+        $this->owner = $owner;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImagePath()
+    {
+        return $this->imagePath;
+    }
+
+    /**
+     * @param mixed $imagePath
+     */
+    public function setImagePath($imagePath)
+    {
+        $this->imagePath = $imagePath;
     }
 }
 

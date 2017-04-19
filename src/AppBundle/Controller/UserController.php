@@ -49,7 +49,7 @@ class UserController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($user);
             $em->flush();
-            return $this->redirectToRoute("homepage");
+            return $this->redirectToRoute("product-form");
         }
 
         return $this->render('users/register.html.twig',['form' => $form->createView()]);

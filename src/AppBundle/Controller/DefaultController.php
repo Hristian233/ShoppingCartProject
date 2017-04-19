@@ -22,11 +22,23 @@ class DefaultController extends Controller
 
         if($form->isValid()){
             $em = $this->getDoctrine()->getManager();
+            $product->setOwner($this->getUser());
+
+            $file = $product->getImagePath();
+            $path = '/../web/images/items/';
+            $filename = md5($product->getName() . $product->getCategory());
+            $file->move(
+                $this->get('kernel')->getRootDir() . $path,
+                $filename . '.png'
+            );
+            $product->setImagePath('images/items/' . $filename . '.png');
 
             $em->persist($product);
             $em->flush();
 
             $this->addFlash('success','The product is on the market');
+
+
 
             return $this->redirectToRoute('product-form');
         }
