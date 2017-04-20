@@ -6,6 +6,7 @@ use AppBundle\Entity\Product;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -22,6 +23,7 @@ class ProductType extends AbstractType
             ])
             ->add('description',TextareaType::class,["required" => false])
             ->add('category', null, ["required" => false])
+            ->add('quantity',NumberType::class)
             ->add('imagePath',FileType::class,["required" => false]);
     }
 

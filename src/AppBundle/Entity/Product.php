@@ -72,6 +72,12 @@ class Product
     private $imagePath;
 
     /**
+     * @ORM\Column(name="quantity", type="integer",unique=false)
+     * @Assert\NotBlank()
+     */
+    private $quantity;
+
+    /**
      * Get id
      *
      * @return int
@@ -200,6 +206,40 @@ class Product
     public function setImagePath($imagePath)
     {
         $this->imagePath = $imagePath;
+    }
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getIsAvailable()
+    {
+        return $this->isAvailable;
+    }
+
+    /**
+     * @param mixed $isAvailable
+     */
+    public function setIsAvailable($isAvailable)
+    {
+        $this->isAvailable = $isAvailable;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @param mixed $quantity
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
     }
 }
 

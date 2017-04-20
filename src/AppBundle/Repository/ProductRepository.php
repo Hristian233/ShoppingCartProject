@@ -10,4 +10,10 @@ namespace AppBundle\Repository;
  */
 class ProductRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function findAll()
+    {
+        $products = $this->createQueryBuilder('p');
+        $products->where('p.isAvailable = 1','p.quantity > 0');
+        return $products->getQuery()->getResult();
+    }
 }

@@ -7,6 +7,8 @@
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+        <link href="{{ asset('css/main.css') }}" rel="stylesheet">
     </head>
     <body>
         {#{% block abv%}<a href={{ path('user_register_form') }}>Register </a> {% endblock %}#}
@@ -37,7 +39,11 @@
                                 <li class="divider"></li>
                                 <li><a href="#">One more separated link</a></li>
                             </ul>
+
                         </li>
+                    <ul class="nav navbar-nav navbar-left">
+                        <li><a href={{ path('products') }}>Products</a></li>
+                    </ul>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
@@ -62,9 +68,15 @@
                 <strong>{{ message }}</strong>
             </div>
         {% endfor %}
+        {% for message in app.session.flashBag.get('error') %}
+            <div class="alert alert-danger">
+                <strong>{{ message }}</strong>
+            </div>
+        {% endfor %}
 
         {% block body %}
         {% endblock %}
         {% block javascripts %}{% endblock %}
+
     </body>
 </html>
