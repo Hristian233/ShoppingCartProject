@@ -12,7 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/", name="product-form")
+     * @Route("/", name="homepage")
+     */
+    public function defaultController()
+    {
+        return $this->render('base.html.twig');
+    }
+
+    /**
+     * @Route("/addProduct", name="product-form")
+     * @Security("has_role('ROLE_USER')")
      */
     public function AddProductAction(Request $request)
     {
@@ -58,7 +67,7 @@ class DefaultController extends Controller
 
     /**
      * @Route("/products", name="products")
-     * @Security("has_role('ROLE_USER')")
+     *
      */
     public function listProductsAction()
     {
@@ -73,5 +82,24 @@ class DefaultController extends Controller
             'products' => $products,
         ]);
 
+    }
+
+    /**
+     * @Route("/category/{id}", name="view_category")
+     */
+    public function viewCategoryAction($id,Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $products = $em->getRepository(Product::class)->findBy(['category' => $id]);
+        $productsToReturn =[];
+
+        foreach ($products as $product){
+            if($product->getQuantity() > 0){
+                $productsToReturn[] = $product;
+            }
+        }
+
+       return $this->render('default/products.html.twig',['products' => $productsToReturn,]);
     }
 }
