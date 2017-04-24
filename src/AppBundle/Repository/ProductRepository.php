@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * ProductRepository
@@ -16,6 +17,7 @@ class ProductRepository extends \Doctrine\ORM\EntityRepository
         $products->where('p.isAvailable = 1','p.quantity > 0');
         return $products->getQuery()->getResult();
     }
+
 
 
 }

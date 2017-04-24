@@ -40,8 +40,9 @@
                         </li>
                     <ul class="nav navbar-nav navbar-left">
                         <li><a href={{ path('products') }}>Products</a></li>
-                        {% if app.user %}
+                        {% if is_granted('ROLE_EDITOR') %}
                             <li><a href={{ path('product-form') }}>Add Product</a></li>
+                            <li><a>Change product</a></li>
                         {% endif %}
                     </ul>
                     </ul>

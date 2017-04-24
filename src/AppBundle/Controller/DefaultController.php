@@ -21,7 +21,8 @@ class DefaultController extends Controller
 
     /**
      * @Route("/addProduct", name="product-form")
-     * @Security("has_role('ROLE_USER')")
+     * @Security("has_role('ROLE_EDITOR')")
+     *
      */
     public function AddProductAction(Request $request)
     {
@@ -58,8 +59,6 @@ class DefaultController extends Controller
         }
 
 
-
-        // replace this example code with whatever you need
         return $this->render('default/index.html.twig', [
             'productForm' => $form->createView(),
         ]);
@@ -95,11 +94,29 @@ class DefaultController extends Controller
         $productsToReturn =[];
 
         foreach ($products as $product){
-            if($product->getQuantity() > 0){
+            if($product->getQuantity() > 0 && $product->getIsAvailable() == '1'){
                 $productsToReturn[] = $product;
             }
         }
 
        return $this->render('default/products.html.twig',['products' => $productsToReturn,]);
+    }
+
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Security("has_role('ROLE_EDITOR')")
+     * @Route("/delete/{id}" , name="delete")
+     */
+    public function deleteProductAction($id, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $products = $em->getRepository(Product::class)->findOneBy(['id' => $id]);
+
+        $em->remove($products);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
     }
 }
