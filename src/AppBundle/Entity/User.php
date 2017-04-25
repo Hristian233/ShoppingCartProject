@@ -36,7 +36,7 @@ class User implements UserInterface
      *
      * @ORM\Column(name="cash", type="decimal")
      */
-    private $cash = 300;
+    private $cash = 1000;
 
     /**
      * @var ArrayCollection
@@ -101,10 +101,14 @@ class User implements UserInterface
      */
     private $roles;
 
+
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
     }
+
+
 
     /**
      * Set password
@@ -174,6 +178,22 @@ class User implements UserInterface
     public function addRole(Role $role)
     {
         $this->roles->add($role);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCash()
+    {
+        return $this->cash;
+    }
+
+    /**
+     * @param mixed $cash
+     */
+    public function setCash($cash)
+    {
+        $this->cash = $cash;
     }
 
 }

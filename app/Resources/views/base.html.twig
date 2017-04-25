@@ -32,9 +32,13 @@
                             <div class="dropdown">
                                 <button class="dropbtn">Categories &dArr;</button>
                                 <div class="dropdown-content">
-                                    <a href={{ path('view_category',{id:1}) }}>Link 1</a>
-                                    <a href={{ path('view_category',{id:2}) }}>Link 2</a>
-                                    <a href={{ path('view_category',{id:3}) }}>Link 3</a>
+
+                                     <!---  <a href={{ path('view_category',{id:1}) }}>Link 1</a>
+                                        <a href={{ path('view_category',{id:2}) }}>Link 2</a>
+                                        <a href={{ path('view_category',{id:3}) }}>Link 3</a>-->
+
+
+
                                 </div>
                             </div>
                         </li>
@@ -42,7 +46,6 @@
                         <li><a href={{ path('products') }}>Products</a></li>
                         {% if is_granted('ROLE_EDITOR') %}
                             <li><a href={{ path('product-form') }}>Add Product</a></li>
-                            <li><a>Change product</a></li>
                         {% endif %}
                     </ul>
                     </ul>

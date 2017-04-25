@@ -2,11 +2,17 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Category;
 use AppBundle\Entity\Product;
+use AppBundle\Entity\ShoppingCart;
 use AppBundle\Form\ProductType;
+use AppBundle\Form\UpdateProductType;
+use AppBundle\Repository\RoleRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -16,7 +22,17 @@ class DefaultController extends Controller
      */
     public function defaultController()
     {
-        return $this->render('base.html.twig');
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * @var Category[] $categories
+         */
+        $categories = $em->getRepository(Category::class)->findAll();
+
+        return $this->render('base.html.twig',[
+            'categories' => $categories,
+        ]);
+
     }
 
     /**
@@ -24,7 +40,7 @@ class DefaultController extends Controller
      * @Security("has_role('ROLE_EDITOR')")
      *
      */
-    public function AddProductAction(Request $request)
+    public function addProductAction(Request $request)
     {
         $product = new Product();
         $form = $this->createForm(ProductType::class,$product);
@@ -115,6 +131,38 @@ class DefaultController extends Controller
         $products = $em->getRepository(Product::class)->findOneBy(['id' => $id]);
 
         $em->remove($products);
+        $em->flush();
+
+        return $this->redirectToRoute('homepage');
+    }
+
+
+    /**
+     * @param Request $request
+     * @param $id
+     * @Method("POST")
+     * @Route("/cart/{id}" , name="cart")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function addToCartAction(Request $request, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $cart = new ShoppingCart();
+        $cart->setUserID($this->getUser());
+
+        $item = $em->getRepository('AppBundle:Product')->find($id);
+        if ($item->getQuantity() < 1){
+
+        }
+        $user = $this->getUser();
+        $user->setCash($user->getCash() - $item->getPrice());
+        $item->setQuantity($item->getQuantity() - 1);
+
+        $cart->setProductID($item->getId());
+        $cart->setUserID($user->getId());
+
+        $em->persist($cart);
         $em->flush();
 
         return $this->redirectToRoute('homepage');
