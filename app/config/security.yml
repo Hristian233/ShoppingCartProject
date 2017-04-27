@@ -33,6 +33,7 @@ security:
         - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_ADMIN }
         - { path: ^/products, roles: ROLE_ADMIN}
+        - { path: ^/login, roles: NO_ROLES}
             # activate different ways to authenticate
 
             # http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate

@@ -37,6 +37,7 @@ class UserController extends Controller
      */
     public function registerProcess(Request $request)
     {
+
         $user = new User();
         $form = $this->createForm(UserType::class,$user);
         $form->handleRequest($request);

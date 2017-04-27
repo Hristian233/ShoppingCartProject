@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\BrowserKit\Response;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -109,6 +110,8 @@ class DefaultController extends Controller
         $products = $em->getRepository(Product::class)->findBy(['category' => $id]);
         $productsToReturn =[];
 
+
+
         foreach ($products as $product){
             if($product->getQuantity() > 0 && $product->getIsAvailable() == '1'){
                 $productsToReturn[] = $product;
@@ -116,6 +119,8 @@ class DefaultController extends Controller
         }
 
        return $this->render('default/products.html.twig',['products' => $productsToReturn,]);
+
+
     }
 
     /**
@@ -134,13 +139,15 @@ class DefaultController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('homepage');
+
+
     }
 
 
     /**
      * @param Request $request
      * @param $id
-     * @Method("POST")
+     *
      * @Route("/cart/{id}" , name="cart")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -148,14 +155,15 @@ class DefaultController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $user = $this->getUser();
         $cart = new ShoppingCart();
         $cart->setUserID($this->getUser());
 
         $item = $em->getRepository('AppBundle:Product')->find($id);
-        if ($item->getQuantity() < 1){
-
+        if ($user->getCash() < $item->getPrice()){
+            throw new Exception("Not enought money");
         }
-        $user = $this->getUser();
+
         $user->setCash($user->getCash() - $item->getPrice());
         $item->setQuantity($item->getQuantity() - 1);
 

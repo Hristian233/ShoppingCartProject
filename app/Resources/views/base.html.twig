@@ -33,12 +33,6 @@
                                 <button class="dropbtn">Categories &dArr;</button>
                                 <div class="dropdown-content">
 
-                                     <!---  <a href={{ path('view_category',{id:1}) }}>Link 1</a>
-                                        <a href={{ path('view_category',{id:2}) }}>Link 2</a>
-                                        <a href={{ path('view_category',{id:3}) }}>Link 3</a>-->
-
-
-
                                 </div>
                             </div>
                         </li>
@@ -65,7 +59,11 @@
 
         {#Check if user is logged in#}
         {% if app.user %}
-            <p>User is logged</p>
+            {% if is_granted('ROLE_EDITOR') %}
+                <p>Editor/Admin is logged</p>
+             {% else %}
+                 <p>User is logged</p>
+            {% endif %}
         {% endif %}
         {% for message in app.session.flashBag.get('success') %}
             <div class="alert alert-success">
