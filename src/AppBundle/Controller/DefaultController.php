@@ -5,6 +5,8 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Category;
 use AppBundle\Entity\Product;
 use AppBundle\Entity\ShoppingCart;
+use AppBundle\Entity\User;
+use AppBundle\Form\CategoryType;
 use AppBundle\Form\ProductType;
 use AppBundle\Form\UpdateProductType;
 use AppBundle\Repository\RoleRepository;
@@ -23,17 +25,7 @@ class DefaultController extends Controller
      */
     public function defaultController()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        /**
-         * @var Category[] $categories
-         */
-        $categories = $em->getRepository(Category::class)->findAll();
-
-        return $this->render('base.html.twig',[
-            'categories' => $categories,
-        ]);
-
+        return $this->render('default/homepage.html.twig');
     }
 
     /**
@@ -138,7 +130,7 @@ class DefaultController extends Controller
         $em->remove($products);
         $em->flush();
 
-        return $this->redirectToRoute('homepage');
+        return $this->redirectToRoute('product-form');
 
 
     }
@@ -169,10 +161,105 @@ class DefaultController extends Controller
 
         $cart->setProductID($item->getId());
         $cart->setUserID($user->getId());
+        $cart->setProductName($item->getName());
+        $cart->setProductPrice($item->getPrice());
 
         $em->persist($cart);
         $em->flush();
 
         return $this->redirectToRoute('homepage');
+    }
+
+
+    /**
+     * @Security("has_role('ROLE_EDITOR')")
+     * @Route("/allCategories", name="allCategories")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function listCategories()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /**
+         * @var Category[] $categories
+         */
+        $categories = $em->getRepository(Category::class)->findAll();
+
+        return $this->render('default/categories.html.twig',[
+            'categories' => $categories,
+        ]);
+    }
+
+
+    /**
+     * @param $id
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Security("has_role('ROLE_EDITOR')")
+     * @Route("/deleteCategory/{id}" , name="delete_category")
+     */
+    public function deleteCategory(Request $request,$id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $products = $em->getRepository(Category::class)->findOneBy(['id' => $id]);
+
+        $em->remove($products);
+        $em->flush();
+
+        return $this->redirectToRoute('allCategories');
+    }
+
+    /**
+     * @Route("/addCategory", name="category-form")
+     * @Security("has_role('ROLE_EDITOR')")
+     *
+     */
+    public function addCategoryAction(Request $request)
+    {
+        $category = new Category();
+        $form = $this->createForm(CategoryType::class,$category);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $em = $this->getDoctrine()->getManager();
+
+
+
+            $em->persist($category);
+            $em->flush();
+
+            $this->addFlash('success','The new category has been added');
+
+
+
+            return $this->redirectToRoute('homepage');
+        }
+        else if($form->isSubmitted() && !$form->isValid()){
+            $this->addFlash('error','The category has not been added');
+
+        }
+
+
+        return $this->render('default/index.html.twig', [
+            'productForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Security("has_role('ROLE_USER')")
+     * @Route("/shoppingcart", name="shoppingcart")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function viewShoppingCartAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+
+        $productsInCart = $em->getRepository(ShoppingCart::class)->findBy(['userID' => $user->getId()]);
+
+
+
+        return $this->render('users/shoppingCart.html.twig',['productsInCart' => $productsInCart]);
     }
 }

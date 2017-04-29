@@ -32,7 +32,9 @@
                             <div class="dropdown">
                                 <button class="dropbtn">Categories &dArr;</button>
                                 <div class="dropdown-content">
-
+                                    <a href={{ path('view_category',{id:1}) }}>Electronics</a>
+                                    <a href={{ path('view_category',{id:2}) }}>Hobbies</a>
+                                    <a href={{ path('view_category',{id:3}) }}>Art</a>
                                 </div>
                             </div>
                         </li>
@@ -40,15 +42,20 @@
                         <li><a href={{ path('products') }}>Products</a></li>
                         {% if is_granted('ROLE_EDITOR') %}
                             <li><a href={{ path('product-form') }}>Add Product</a></li>
+
+                            <li><a href={{ path('allCategories') }}>Categories</a></li>
+                            <li><a href={{ path('category-form') }}>Add Category</a></li>
+
                         {% endif %}
                     </ul>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         {% if app.user %}
-                        <li><a href={{ path('user_logout') }}>Logout</a></li>
+                            <li><a href={{ path('shoppingcart') }}>My Shopping Cart</a></li>
+                            <li><a href={{ path('user_logout') }}>Logout</a></li>
                         {% else %}
-                        <li><a href={{ path('our_login') }}>Login</a></li>
-                        <li><a href={{ path('user_register_form') }}>Register</a></li>
+                            <li><a href={{ path('our_login') }}>Login</a></li>
+                            <li><a href={{ path('user_register_form') }}>Register</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -60,11 +67,16 @@
         {#Check if user is logged in#}
         {% if app.user %}
             {% if is_granted('ROLE_EDITOR') %}
-                <p>Editor/Admin is logged</p>
+                <p class="hello">Editor/Admin is logged</p>
+                <p class="hello">Your Cash: <br> {{ app.getUser().getCash() }} BGN</p>
              {% else %}
-                 <p>User is logged</p>
+                 <p class="hello">Hello {{ app.getUser().getUsername() }} </p>
+                <p class="hello">Your Cash: <br> {{ app.getUser().getCash() }} BGN</p>
             {% endif %}
         {% endif %}
+
+
+
         {% for message in app.session.flashBag.get('success') %}
             <div class="alert alert-success">
                 <strong>{{ message }}</strong>
@@ -75,6 +87,7 @@
                 <strong>{{ message }}</strong>
             </div>
         {% endfor %}
+
 
         {% block body %}
         {% endblock %}
