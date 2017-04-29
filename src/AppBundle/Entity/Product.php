@@ -37,8 +37,8 @@ class Product
      * @Assert\NotBlank()
      * @Assert\Range(
      *     min=1,
-     *     max="200",
-     *     maxMessage="Value should be less than 200"
+     *     max="1000",
+     *     maxMessage="Value should be less than 1000"
      * )
      *
      * @ORM\Column(name="price", type="decimal", precision=11, scale=2)

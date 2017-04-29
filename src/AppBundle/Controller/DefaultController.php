@@ -25,7 +25,11 @@ class DefaultController extends Controller
      */
     public function defaultController()
     {
-        return $this->render('default/homepage.html.twig');
+        $em = $this->getDoctrine()->getManager();
+
+        $categories = $em->getRepository(Category::class)->findAll();
+
+        return $this->redirectToRoute('products',['categories' => $categories]);
     }
 
     /**
@@ -86,6 +90,7 @@ class DefaultController extends Controller
          */
         $products = $em->getRepository(Product::class)->findAll();
 
+
         return $this->render('default/products.html.twig',[
             'products' => $products,
         ]);
@@ -130,7 +135,7 @@ class DefaultController extends Controller
         $em->remove($products);
         $em->flush();
 
-        return $this->redirectToRoute('product-form');
+        return $this->redirectToRoute('products');
 
 
     }
@@ -213,6 +218,7 @@ class DefaultController extends Controller
      * @Route("/addCategory", name="category-form")
      * @Security("has_role('ROLE_EDITOR')")
      *
+     *
      */
     public function addCategoryAction(Request $request)
     {
@@ -224,15 +230,10 @@ class DefaultController extends Controller
         if($form->isSubmitted() && $form->isValid()){
             $em = $this->getDoctrine()->getManager();
 
-
-
             $em->persist($category);
             $em->flush();
 
             $this->addFlash('success','The new category has been added');
-
-
-
             return $this->redirectToRoute('homepage');
         }
         else if($form->isSubmitted() && !$form->isValid()){
@@ -262,4 +263,65 @@ class DefaultController extends Controller
 
         return $this->render('users/shoppingCart.html.twig',['productsInCart' => $productsInCart]);
     }
+
+    /**
+     * @Route("/allusers", name="all_users")
+     * @Security("has_role('ROLE_ADMIN')")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function listUsersAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $users = $em->getRepository(User::class)->findAll();
+
+        return $this->render('admin/list_users.html.twig',['users' => $users]);
+
+    }
+
+    /**
+     * @param $id
+     * @Security("has_role('ROLE_ADMIN')")
+     * @Route("/deleteuser/{id}", name="delete_user")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteUserAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $em->getRepository(User::class)->findOneBy(['id' => $id]);
+
+        $em->remove($user);
+        $em->flush();
+
+        return $this->redirectToRoute('all_users');
+    }
+
+    /**
+     * @param $id
+     * @Route("/deleteproduct/{id}", name="del_product")
+     * @Security("has_role('ROLE_USER')")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function deleteFromCartAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository(Product::class)->findOneBy($id);
+
+        $em->remove($product);
+        $em->flush();
+
+        return $this->redirectToRoute('shoppingcart');
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -26,14 +26,12 @@
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-
                         <li class="dropdown">
                             <div class="dropdown">
                                 <button class="dropbtn">Categories &dArr;</button>
                                 <div class="dropdown-content">
                                     <a href={{ path('view_category',{id:1}) }}>Electronics</a>
-                                    <a href={{ path('view_category',{id:2}) }}>Hobbies</a>
+                                    <a href={{ path('view_category',{id:9}) }}>Shoes</a>
                                     <a href={{ path('view_category',{id:3}) }}>Art</a>
                                 </div>
                             </div>
@@ -44,9 +42,11 @@
                             <li><a href={{ path('product-form') }}>Add Product</a></li>
 
                             <li><a href={{ path('allCategories') }}>Categories</a></li>
-                            <li><a href={{ path('category-form') }}>Add Category</a></li>
-
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a href={{ path('all_users') }}>Users</a></li>
+                            {% endif %}
                         {% endif %}
+
                     </ul>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

@@ -20,6 +20,7 @@ class SecurityController extends Controller
         {
             return $this->redirectToRoute('homepage');
         }
+
         return $this->render('security/login.html.twig');
     }
 
